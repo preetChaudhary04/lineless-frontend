@@ -1,0 +1,162 @@
+/* src/features/auth/style.css */
+
+/* 1. Page Wrapper Layout */
+.auth-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 85vh;
+  /* Centers the card vertically while leaving breathing room for a navbar later */
+  padding: 20px;
+  background-color: #f8fafc;
+  /* Clean slate-50 background */
+}
+
+/* 2. Form Card Styling */
+.auth-card {
+  background-color: #ffffff;
+  padding: 35px 40px;
+  border-radius: 12px;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
+  width: 100%;
+  max-width: 440px;
+  border: 1px solid #e2e8f0;
+}
+
+.auth-card h2 {
+  margin: 0 0 8px 0;
+  color: #1e293b;
+  /* Slate-800 */
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.auth-subtitle {
+  color: #64748b;
+  /* Slate-500 */
+  margin: 0 0 28px 0;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* 3. Form Input Alignment */
+.form-group {
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  font-weight: 600;
+  margin-bottom: 8px;
+  font-size: 13.5px;
+  color: #334155;
+  /* Slate-700 */
+}
+
+.form-group input,
+.auth-select {
+  padding: 11px 14px;
+  border: 1px solid #cbd5e1;
+  /* Slate-300 */
+  border-radius: 8px;
+  font-size: 15px;
+  outline: none;
+  background-color: #ffffff;
+  color: #1e293b;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+/* Focused State Feedback */
+.form-group input:focus,
+.auth-select:focus {
+  border-color: #2563eb;
+  /* Royal Blue accent */
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+/* Specific styling to fix native dropdown formatting */
+.auth-select {
+  cursor: pointer;
+  appearance: none;
+  /* Removes default OS styling arrow */
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  background-size: 16px;
+  padding-right: 40px;
+}
+
+/* 4. Action Button Engine */
+.auth-btn {
+  background-color: #2563eb;
+  color: #ffffff;
+  padding: 13px;
+  border: none;
+  border-radius: 8px;
+  font-size: 15.5px;
+  font-weight: 600;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 10px;
+  transition: background-color 0.15s, transform 0.1s;
+}
+
+.auth-btn:hover {
+  background-color: #1d4ed8;
+}
+
+.auth-btn:active {
+  transform: scale(0.99);
+  /* Slight compression on click for tactile click feedback */
+}
+
+.auth-btn:disabled {
+  background-color: #94a3b8;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* 5. Clean Context Alert Banners */
+.alert {
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-bottom: 24px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.error-alert {
+  background-color: #fef2f2;
+  color: #991b1b;
+  border: 1px solid #fee2e2;
+}
+
+.success-alert {
+  background-color: #f0fdf4;
+  color: #166534;
+  border: 1px solid #dcfce7;
+}
+
+/* 6. Footer Navigation Text */
+.auth-redirect-text {
+  text-align: center;
+  margin-top: 24px;
+  margin-bottom: 0;
+  font-size: 14px;
+  color: #64748b;
+}
+
+.auth-redirect-text a {
+  color: #2563eb;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.15s;
+}
+
+.auth-redirect-text a:hover {
+  color: #1d4ed8;
+  text-decoration: underline;
+}
