@@ -30,7 +30,7 @@ const Login = () => {
     try {
       await handleLogin(formData);
       setUiSuccess("Welcome back! Login successful.");
-      navigate("/");
+      navigate("/services");
     } catch (err) {
       setUiError(err.message || "Invalid credentials. Please try again.");
     }

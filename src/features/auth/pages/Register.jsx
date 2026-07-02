@@ -33,7 +33,7 @@ const Register = () => {
     try {
       await handleRegister(formData);
       setUiSuccess("Registration successful! Welcome to LineLess.");
-      navigate("/");
+      navigate("/services");
     } catch (err) {
       setUiError(err.message || "An unexpected registration error occurred.");
     }

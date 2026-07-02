@@ -23,6 +23,19 @@
   margin-bottom: 30px;
 }
 
+.header-main-info {
+  display: inline-block;
+  width: 60%;
+  vertical-align: middle;
+}
+
+.header-actions-cluster {
+  display: inline-block;
+  width: 40%;
+  text-align: right;
+  vertical-align: middle;
+}
+
 .dashboard-header h1 {
   font-size: 24pt;
   font-weight: 700;
@@ -57,13 +70,21 @@
 .primary-btn {
   background-color: #3182ce;
   color: #ffffff;
-  float: right;
-  margin-top: -50px;
-  /* Aligns neatly alongside the header context descriptions */
+  margin-left: 10px;
 }
 
 .primary-btn:hover {
   background-color: #2b6cb0;
+}
+
+.secondary-btn {
+  background-color: #e2e8f0;
+  color: #4a5568;
+}
+
+.secondary-btn:hover {
+  background-color: #cbd5e0;
+  color: #2d3748;
 }
 
 .success-btn {
@@ -327,12 +348,32 @@
   }
 }
 
-@media (max-width: 640px) {
-  .primary-btn {
+@media (max-width: 768px) {
+
+  .header-main-info,
+  .header-actions-cluster {
     display: block;
-    float: none;
-    margin-top: 15px;
     width: 100%;
+    text-align: left;
+  }
+
+  .header-actions-cluster {
+    margin-top: 15px;
+  }
+
+  .primary-btn {
+    margin-left: 0;
+    margin-right: 10px;
+  }
+}
+
+@media (max-width: 640px) {
+  .header-actions-cluster .action-btn {
+    display: block;
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+    margin-bottom: 10px;
   }
 
   .form-row input[type="text"] {

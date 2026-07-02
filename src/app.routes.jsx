@@ -6,7 +6,7 @@ import ServicesDashboard from './features/services/pages/ServicesDashboard'
 export const router = createBrowserRouter([
   {
     path: "/",
-    element: <h1>home</h1>
+    element: <ServicesDashboard />
   },
   {
     path: "/register",
