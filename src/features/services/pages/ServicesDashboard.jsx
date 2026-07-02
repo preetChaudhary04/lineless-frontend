@@ -2,18 +2,22 @@ import React, { useEffect, useState } from "react";
 import { useServices } from "../hooks/useServices";
 import { useAuth } from "../../auth/hooks/useAuth"; // To get user
 import LogoutPopUp from '../../../components/LogoutPopUp';
+import { useTickets } from '../../tickets/hooks/useTickets';
 import { useNavigate } from "react-router";
 import "../style.css";
 
 const ServicesDashboard = () => {
+  // using Hooks
   const { user, handleLogout } = useAuth();
   const navigate = useNavigate();
-  const { services, loader, error, handleFetchAllServices, handleCreateService } = useServices();
+  const { services, loader: servicesLoader, error: servicesError, handleFetchAllServices, handleCreateService } = useServices();
+  const { handleJoinQueue, loader: ticketLoader, error: ticketError } = useTickets();
 
   // Local state for the creation modal/form toggle (For Providers)
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [formData, setFormData] = useState({ name: "", description: "" });
   const [formError, setFormError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
   // Local state for managing the visibility of the confirmation popup
   const [showLogoutPopup, setShowLogoutPopup] = useState(false);
@@ -39,6 +43,27 @@ const ServicesDashboard = () => {
     }
   };
 
+  // Fully wired up to process API ticket issuance or route providers to line management
+  const handleCardAction = async (serviceId) => {
+    if (user?.role === "PROVIDER" || user?.role === "ADMIN") {
+      navigate(`/manage-line/${serviceId}`);
+    } else {
+      setFormError("");
+      setSuccessMessage("");
+      try {
+        const res = await handleJoinQueue(serviceId);
+        setSuccessMessage(res.message || "Joined line successfully!");
+        setTimeout(() => navigate("/my-tickets"), 1000);
+      } catch (err) {
+        setFormError(err.message || "Failed to join queue.");
+      }
+    }
+  };
+
+  // Global loader and error states
+  const globalLoader = servicesLoader || ticketLoader;
+  const globalError = servicesError || ticketError || formError;
+
   return (
     <div className="dashboard-wrapper">
       {/* Header Management Strip */}
@@ -50,6 +75,17 @@ const ServicesDashboard = () => {
 
         {/* Action Button Cluster Container */}
         <div className="header-actions-cluster">
+          {/* Navigation link allowing students quick access to view their own token lists */}
+          {user?.role === "CUSTOMER" && (
+            <button
+              className="action-btn secondary-btn"
+              onClick={() => navigate("/my-tickets")}
+              style={{ marginRight: "10px" }}
+            >
+              My Tokens
+            </button>
+          )}
+
           {/* Logout Control - Intercepted to open confirmation popup */}
           <button
             className="action-btn secondary-btn"
@@ -71,15 +107,14 @@ const ServicesDashboard = () => {
       </div>
 
       {/* Global Hook Network Error Alert */}
-      {error && <div className="alert error-alert">{error}</div>}
+      {globalError && <div className="alert error-alert">{globalError}</div>}
+      {successMessage && <div className="alert" style={{ backgroundColor: "#e6fffa", color: "#234e52", borderLeft: "4px solid #319795" }}>{successMessage}</div>}
 
       {/* Conditional Row Block: Provider Creation Form */}
       {showCreateForm && (
         <div className="creation-card-wrapper">
           <form onSubmit={handleFormSubmit} className="inline-creation-form">
             <h3>Configure New Campus Counter</h3>
-            {formError && <div className="alert error-alert">{formError}</div>}
-
             <div className="form-row">
               <input
                 type="text"
@@ -96,8 +131,8 @@ const ServicesDashboard = () => {
                 value={formData.description}
                 onChange={handleInputChange}
               />
-              <button type="submit" className="action-btn success-btn" disabled={loader}>
-                {loader ? "Provisioning..." : "Confirm Launch"}
+              <button type="submit" className="action-btn success-btn" disabled={globalLoader}>
+                {servicesLoader ? "Provisioning..." : "Confirm Launch"}
               </button>
             </div>
           </form>
@@ -105,7 +140,7 @@ const ServicesDashboard = () => {
       )}
 
       {/* Core Component Grid Interface */}
-      {loader && services.length === 0 ? (
+      {globalLoader && services.length === 0 ? (
         <div className="dashboard-message">Loading active campus counters...</div>
       ) : services.length === 0 ? (
         <div className="dashboard-message empty-state">
@@ -138,8 +173,17 @@ const ServicesDashboard = () => {
                   </div>
                 </div>
 
-                <button className="join-queue-btn">
-                  {user?.role === "PROVIDER" ? "Monitor Line" : "Get Ticket"}
+                {/* Mapped the button click to use the active handler and integrated safety disable limits for closed desks */}
+                <button
+                  className="join-queue-btn"
+                  onClick={() => handleCardAction(service.serviceId)}
+                  disabled={globalLoader || (service.serviceStatus === "CLOSED" && user?.role === "CUSTOMER")}
+                  style={service.serviceStatus === "CLOSED" && user?.role === "CUSTOMER" ? { cursor: "not-allowed", opacity: 0.6 } : {}}
+                >
+                  {user?.role === "PROVIDER" || user?.role === "ADMIN"
+                    ? "Monitor Line"
+                    : service.serviceStatus === "CLOSED" ? "Closed" : "Get Ticket"
+                  }
                 </button>
               </div>
             </div>
@@ -150,9 +194,13 @@ const ServicesDashboard = () => {
       {/* Logout Confirmation Dialog Component */}
       <LogoutPopUp
         isOpen={showLogoutPopup}
-        onConfirm={() => {
-          handleLogout();
-          navigate('/login');
+        onConfirm={async () => {
+          try {
+            await handleLogout();
+            navigate('/login');
+          } catch (err) {
+            console.error("Logout execution failed:", err);
+          }
         }}
         onCancel={() => {
           setShowLogoutPopup(false);
