@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useAuth } from "../context/useAuth";
+import { useAuth } from "../hooks/useAuth";
 import { useNavigate, Link } from "react-router";
 import "../style.css";
 
@@ -120,7 +120,7 @@ const Register = () => {
         </form>
 
         <p className="auth-redirect-text">
-          Already have an account? <a href="/login">Login here</a>
+          Already have an account? <Link to='/login'>Login here</Link>
         </p>
       </div>
     </div>

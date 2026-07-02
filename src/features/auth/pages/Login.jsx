@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useAuth } from "../context/useAuth";
+import { useAuth } from "../hooks/useAuth";
 import { useNavigate, Link } from "react-router";
 import "../style.css";
 
@@ -78,7 +78,7 @@ const Login = () => {
         </form>
 
         <p className="auth-redirect-text">
-          Don't have an account yet? <a href="/register">Register here</a>
+          Don't have an account yet? <Link to='/register'>Register here</Link>
         </p>
       </div>
     </div>
