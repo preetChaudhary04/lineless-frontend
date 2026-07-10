@@ -77,37 +77,35 @@ const MyTicketsDashboard = () => {
                 <p className="num-label">Token Number</p>
                 <h2>#{String(ticket.ticketNumber).padStart(3, "0")}</h2>
               </div>
-
-              {/* <div className="stub-footer">
-                <p>Issued: {new Date(ticket.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
-                {ticket.status === "WAITING" && (
-                  <p className="live-status-alert">🔔 Keep an eye on this space</p>
-                )}
-                {ticket.status === "SERVING" && (
-                  <p className="live-status-alert urgent">⚡ Proceed to counter immediately!</p>
-                )}
-              </div> */}
               <div className="stub-footer">
                 <p>Issued: {new Date(ticket.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
 
+                {/* 🟨 Renders real-time position calculations and estimated wait windows */}
                 {ticket.status === "WAITING" && (
                   <>
-                    {/* 🟨 Displays real-time position calculations dynamically */}
-                    <p className="live-status-alert">
+                    <p className="live-status-alert" style={{ marginTop: "8px", fontWeight: "600", color: "#2b6cb0" }}>
                       {ticket.peopleAhead === 0 ? (
-                        "⚡ You are next in line! Move close to the desk."
+                        "⚡ You are next in line! Move close to the counter."
                       ) : (
                         `👥 People ahead of you: ${ticket.peopleAhead}`
                       )}
                     </p>
-                    <p style={{ fontSize: "8.5pt", color: "#a0aec0" }}>
+                    <p style={{ fontSize: "8.5pt", color: "#718096", margin: "2px 0 0 0" }}>
                       Est. wait time: ~{ticket.peopleAhead * 5} mins
                     </p>
                   </>
                 )}
 
                 {ticket.status === "SERVING" && (
-                  <p className="live-status-alert urgent">⚡ Proceed to counter immediately!</p>
+                  <p className="live-status-alert urgent" style={{ animation: "pulse 1.5s infinite" }}>
+                    ⚡ Proceed to counter immediately!
+                  </p>
+                )}
+
+                {ticket.status === "COMPLETED" && (
+                  <p style={{ fontSize: "8.5pt", color: "#4a5568", margin: "8px 0 0 0" }}>
+                    ✅ Transaction complete
+                  </p>
                 )}
               </div>
             </div>
