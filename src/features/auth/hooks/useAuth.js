@@ -30,7 +30,10 @@ export const useAuth = () => {
         phoneNumber,
         role,
       });
-      if (data) setUser(data.user);
+      if (data) {
+        localStorage.setItem("token", data.token);
+        setUser(data.user);
+      }
     } catch (error) {
       console.error("Registration failed:", error.message);
       throw error;
@@ -44,7 +47,10 @@ export const useAuth = () => {
     setLoader(true);
     try {
       const data = await loginUser({ email, password });
-      if (data) setUser(data.user);
+      if (data) {
+        localStorage.setItem("token", data.token);
+        setUser(data.user);
+      }
     } catch (error) {
       console.error("Login failed:", error.message);
       throw error;
@@ -62,6 +68,8 @@ export const useAuth = () => {
     } catch (error) {
       console.error("Hook error in handleLogout:", error.message);
     } finally {
+      localStorage.removeItem("token");
+      setUser(null);
       setLoader(false);
     }
   };
