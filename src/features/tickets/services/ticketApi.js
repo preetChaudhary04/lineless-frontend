@@ -56,3 +56,15 @@ export const fetchActiveLineup = async (serviceId) => {
     );
   }
 };
+
+// Clearing the queue
+export const clearCounterDesk = async (serviceId) => {
+  try {
+    const response = await api.patch(`/api/tickets/clear/${serviceId}`);
+    return response.data;
+  } catch (error) {
+    throw new Error(
+      error.response?.data?.message || "Failed to clear counter.",
+    );
+  }
+};

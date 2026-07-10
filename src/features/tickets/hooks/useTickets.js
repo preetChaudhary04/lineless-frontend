@@ -5,6 +5,7 @@ import {
   fetchMyTickets,
   advanceNextCustomer,
   fetchActiveLineup,
+  clearCounterDesk,
 } from "../services/ticketApi";
 
 export const useTickets = () => {
@@ -96,6 +97,21 @@ export const useTickets = () => {
     }
   };
 
+  const handleClearCounter = async (serviceId) => {
+    setTicketsLoader(true);
+    try {
+      const data = await clearCounterDesk(serviceId);
+      setCurrentServingTicket(null); // Clear local context memory instantly
+      await handleFetchActiveLineup(serviceId); // Synchronize active lineup arrays
+      return data;
+    } catch (err) {
+      setTicketsError(err.message);
+      throw err;
+    } finally {
+      setTicketsLoader(false);
+    }
+  };
+
   return {
     myTickets,
     activeLineup,
@@ -106,5 +122,6 @@ export const useTickets = () => {
     handleFetchMyTickets,
     handleFetchActiveLineup,
     handleAdvanceNext,
+    handleClearCounter,
   };
 };

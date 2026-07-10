@@ -8,7 +8,7 @@ import "../style.css";
 const MerchantLineManager = () => {
   const { serviceId } = useParams();
   const navigate = useNavigate();
-  const { activeLineup, currentServingTicket, loader, error, handleFetchActiveLineup, handleAdvanceNext, setActiveLineup, setCurrentServingTicket } = useTickets();
+  const { activeLineup, currentServingTicket, loader, error, handleFetchActiveLineup, handleAdvanceNext, setActiveLineup, setCurrentServingTicket, handleClearCounter } = useTickets();
   const { handleUpdateStatus, services } = useServices();
 
   const currentService = services.find(s => s.serviceId === serviceId);
@@ -68,6 +68,13 @@ const MerchantLineManager = () => {
     } catch (err) { }
   };
 
+  // 🟨 Trigger method to gracefully clear the last student from the active slot
+  const triggerClearDesk = async () => {
+    try {
+      await handleClearCounter(serviceId);
+    } catch (err) { }
+  };
+
   const waitingCustomers = activeLineup.filter(t => t.status === "WAITING");
 
   return (
@@ -124,13 +131,25 @@ const MerchantLineManager = () => {
           </div>
         )}
 
-        <button
-          className="action-btn next-step-btn"
-          onClick={triggerNextCall}
-          disabled={loader || waitingCustomers.length === 0 || currentStatus !== "OPEN"}
-        >
-          {loader ? "Advancing State..." : currentStatus !== "OPEN" ? "🚫 Open Counter to Serve" : "🔊 Call Next Customer"}
-        </button>
+        {/* 🟨 Evaluates the state machine tail to render a close switch option if the line is empty */}
+        {currentServingTicket && waitingCustomers.length === 0 ? (
+          <button
+            className="action-btn next-step-btn"
+            onClick={triggerClearDesk}
+            disabled={loader}
+            style={{ backgroundColor: "#4a5568" }}
+          >
+            {loader ? "Clearing..." : "🏁 Finish & Clear Counter"}
+          </button>
+        ) : (
+          <button
+            className="action-btn next-step-btn"
+            onClick={triggerNextCall}
+            disabled={loader || waitingCustomers.length === 0 || currentStatus !== "OPEN"}
+          >
+            {loader ? "Advancing State..." : currentStatus !== "OPEN" ? "🚫 Open Counter to Serve" : "🔊 Call Next Customer"}
+          </button>
+        )}
       </div>
 
       <div className="lineup-list-section">
