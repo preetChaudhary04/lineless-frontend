@@ -3,6 +3,7 @@ import { ServicesContext } from "../context/servicesContext";
 import {
   fetchAllServices,
   createServiceCounter,
+  updateCounterStatus,
 } from "../services/servicesApi";
 
 export const useServices = () => {
@@ -56,11 +57,31 @@ export const useServices = () => {
     }
   };
 
+  // Update the status of queue counter (Providers/Admins only)
+  const handleUpdateStatus = async (serviceId, status) => {
+    setServicesLoader(true);
+    try {
+      const data = await updateCounterStatus(serviceId, status);
+      setServices((prev) =>
+        prev.map((s) =>
+          s.serviceId === serviceId ? { ...s, serviceStatus: status } : s,
+        ),
+      );
+      return data;
+    } catch (err) {
+      setServicesError(err.message);
+      throw err;
+    } finally {
+      setServicesLoader(false);
+    }
+  };
+
   return {
     services,
     loader: servicesLoader,
     error: servicesError,
     handleFetchAllServices,
     handleCreateService,
+    handleUpdateStatus,
   };
 };

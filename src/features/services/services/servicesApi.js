@@ -30,3 +30,17 @@ export const createServiceCounter = async ({ name, description }) => {
     );
   }
 };
+
+// Update the status of queue counter (Providers/Admins only)
+export const updateCounterStatus = async (serviceId, serviceStatus) => {
+  try {
+    const response = await api.patch(`/api/services/status/${serviceId}`, {
+      serviceStatus,
+    });
+    return response.data;
+  } catch (error) {
+    throw new Error(
+      error.response?.data?.message || "Failed to alter desk status.",
+    );
+  }
+};
